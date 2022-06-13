@@ -1,18 +1,15 @@
-self.addEventListener('install', (event) => {
-    console.log('Installing service Worker');
+import CacheHelper from "./utils/cache-helper";
 
-    // TODO
+const { assets } = global.serviceWorkerOption;
+
+self.addEventListener('install', (event) => {
+    event.waitUntil(CacheHelper.cachingAppShell([...assets, './']));
 });
 
 self.addEventListener('activate', (event) => {
-    console.log('Activate Service Worker');
-
-    // TODO
+    event.waitUntil(CacheHelper.deleteOldCache());
 });
 
 self.addEventListener('fetch', (event) => {
-    console.log(event.request);
-
-    event.respondWith(fetch(event.request));
-    // TODO
+    event.respondWith(CacheHelper.revalidateCache(event.request));
 });
